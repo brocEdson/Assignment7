@@ -1,5 +1,5 @@
 ﻿/* Broc Edson
- * Prototype 4
+ * Assignment 7
  * Rotates the camera around a fixed point
  */
 using System.Collections;
@@ -9,11 +9,6 @@ using UnityEngine;
 public class RotateCamera : MonoBehaviour
 {
     public float rotationSpeed; 
-
-    void Start()
-    {
-        
-    }
 
     void Update()
     {
