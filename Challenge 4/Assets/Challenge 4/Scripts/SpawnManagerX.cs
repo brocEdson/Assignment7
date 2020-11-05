@@ -1,6 +1,11 @@
-﻿using System.Collections;
+﻿/* Broc Edson
+ * Assignment 7
+ * Manages enemy spawns
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpawnManagerX : MonoBehaviour
 {
@@ -12,21 +17,37 @@ public class SpawnManagerX : MonoBehaviour
     private float spawnZMax = 25; // set max spawn Z
 
     public int enemyCount;
-    public int waveCount = 1;
+    public int waveCount = 0;
+    public float speed = 10f;
+    public Text waveText;
+    public GameManager gameManager;
 
+    public GameObject player;
 
-    public GameObject player; 
+    private void Start()
+    {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        enemyCount = GameObject.FindGameObjectsWithTag("Powerup").Length;
+        enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
 
         if (enemyCount == 0)
         {
-            SpawnEnemyWave(waveCount);
+            if(waveCount > 10)
+            {
+                gameManager.won = true;
+                gameManager.ended = true;
+            }
+            gameManager.CheckWaveEnd(waveCount);
+            if (!gameManager.ended)
+            {
+                SpawnEnemyWave(waveCount);
+            }
         }
-
+        waveText.text = "Wave: " + (waveCount - 1);
     }
 
     // Generate random spawn position for powerups and enemy balls
@@ -49,14 +70,15 @@ public class SpawnManagerX : MonoBehaviour
         }
 
         // Spawn number of enemy balls based on wave number
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < enemiesToSpawn; i++)
         {
             Instantiate(enemyPrefab, GenerateSpawnPosition(), enemyPrefab.transform.rotation);
         }
 
+        speed += 10f;
         waveCount++;
         ResetPlayerPosition(); // put player back at start
-
+        gameManager.scoreGoal = false;
     }
 
     // Move player back to position in front of own goal
